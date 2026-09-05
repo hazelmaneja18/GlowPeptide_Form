@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <title>Glow Peptide Order & Payment</title>
+  <title>Glow Peptide Order & Management</title>
   <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
   
   <style>
@@ -97,7 +97,7 @@
         align-items: center;
       }
       .input-group label {
-        min-width: 120px;
+        min-width: 145px;
       }
     }
 
@@ -106,7 +106,7 @@
       font-size: 0.9rem;
     }
 
-    .input-group input {
+    .input-group input, .input-group textarea {
       flex: 1;
       width: 100%;
       border: none;
@@ -115,9 +115,10 @@
       font-size: 16px;
       outline: none;
       background: transparent;
+      resize: vertical;
     }
 
-    .input-group input:focus {
+    .input-group input:focus, .input-group textarea:focus {
       border-bottom-color: var(--primary-purple);
     }
 
@@ -215,7 +216,6 @@
       min-height: 42px;
     }
 
-    /* Clean Payment Section (No QR) */
     .payment-section {
       background: #ffffff;
       border: 2px solid var(--primary-purple);
@@ -280,10 +280,6 @@
       cursor: pointer;
     }
 
-    .btn-copy:active {
-      background: #eee5f7;
-    }
-
     .receipt-upload-box {
       background: #faf8fd;
       border: 1.5px dashed var(--border-color);
@@ -301,7 +297,6 @@
       border: 1px solid #ddd;
     }
 
-    /* Consent Cards */
     .cards-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -351,7 +346,6 @@
       accent-color: var(--primary-purple);
     }
 
-    /* Signature Area */
     .signature-pad-wrapper {
       border: 1.5px dashed var(--primary-purple);
       border-radius: 10px;
@@ -402,7 +396,6 @@
       min-height: 48px;
     }
 
-    /* Admin Filters & Log */
     .admin-header {
       display: flex;
       justify-content: space-between;
@@ -476,7 +469,7 @@
       border-collapse: collapse;
       font-size: 0.82rem;
       text-align: left;
-      min-width: 480px;
+      min-width: 500px;
     }
 
     thead {
@@ -491,10 +484,10 @@
     }
 
     .status-badge {
-      font-size: 0.72rem;
-      padding: 3px 6px;
+      font-size: 0.75rem;
+      padding: 4px 8px;
       border-radius: 4px;
-      font-weight: 600;
+      font-weight: 700;
       display: inline-block;
     }
 
@@ -504,8 +497,8 @@
     }
 
     .status-unpaid {
-      background: #fdf0d5;
-      color: #794d05;
+      background: #fde8e8;
+      color: #9c1414;
     }
 
     .btn-view-detail {
@@ -520,7 +513,6 @@
       white-space: nowrap;
     }
 
-    /* Modals */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -578,11 +570,12 @@
       color: #333;
     }
 
+    /* Detail Modal */
     .detail-modal-box {
       background: #fff;
       padding: clamp(16px, 3vw, 24px);
       border-radius: 16px;
-      max-width: 500px;
+      max-width: 520px;
       width: 100%;
       max-height: 90vh;
       overflow-y: auto;
@@ -594,12 +587,12 @@
     .detail-row {
       display: flex;
       flex-direction: column;
-      padding: 6px 0;
+      padding: 7px 0;
       border-bottom: 1px solid #f0eaf7;
-      font-size: 0.88rem;
+      font-size: 0.9rem;
     }
 
-    @media (min-width: 420px) {
+    @media (min-width: 440px) {
       .detail-row {
         flex-direction: row;
         justify-content: space-between;
@@ -609,6 +602,34 @@
     .detail-row span:first-child {
       font-weight: 600;
       color: var(--accent);
+      min-width: 140px;
+    }
+
+    .status-toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-toggle-status {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1.5px solid transparent;
+    }
+
+    .btn-set-paid {
+      background: #daf3e3;
+      color: #116834;
+      border-color: #85d59f;
+    }
+
+    .btn-set-unpaid {
+      background: #fde8e8;
+      color: #9c1414;
+      border-color: #f7a8a8;
     }
 
     .items-list-box {
@@ -622,11 +643,11 @@
     .items-list-box ul {
       margin: 0;
       padding-left: 18px;
-      font-size: 0.85rem;
+      font-size: 0.88rem;
     }
 
     .img-evidence-box {
-      margin-top: 12px;
+      margin-top: 10px;
       border: 1.5px dashed var(--border-color);
       border-radius: 8px;
       padding: 8px;
@@ -636,7 +657,7 @@
 
     .img-evidence {
       max-width: 100%;
-      max-height: 160px;
+      max-height: 180px;
       object-fit: contain;
     }
 
@@ -647,13 +668,11 @@
 </head>
 <body>
 
-  <!-- Top Tab Navigation -->
   <div class="view-tabs">
     <button class="tab-btn active" id="tabForm">Order Form</button>
     <button class="tab-btn" id="tabHistory">🔒 History & Logs</button>
   </div>
 
-  <!-- 1. Customer Order Form View -->
   <div class="app-container" id="formView">
     <h1>Glow Peptide Order Form 🎀</h1>
     <form id="orderForm">
@@ -663,8 +682,12 @@
           <input type="text" id="fullName" placeholder="Full name" required />
         </div>
         <div class="input-group">
-          <label for="address">Address:</label>
-          <input type="text" id="address" placeholder="Delivery address" required />
+          <label for="address">Delivery Address:</label>
+          <input type="text" id="address" placeholder="Unit, Street, Barangay, City" required />
+        </div>
+        <div class="input-group">
+          <label for="deliveryInstruction">Delivery Instruction:</label>
+          <input type="text" id="deliveryInstruction" placeholder="e.g. Leave at guardhouse / Call upon arrival" />
         </div>
         <div class="input-group">
           <label for="phone">Phone number:</label>
@@ -672,7 +695,6 @@
         </div>
       </div>
 
-      <!-- Dynamic Item List Container -->
       <div class="peptides-container">
         <div class="peptides-title">
           <span>Choose Items to Order</span>
@@ -686,7 +708,6 @@
         </button>
       </div>
 
-      <!-- Compact Payment Section (No QR) -->
       <div class="payment-section">
         <div class="payment-header">💳 Payment Options & Proof</div>
         
@@ -761,7 +782,6 @@
     </form>
   </div>
 
-  <!-- 2. Admin Sign-Up History View (Passcode Protected) -->
   <div class="app-container hidden" id="historyView">
     <div class="admin-header">
       <h1 style="margin: 0; font-size: 1.15rem;">History Log 📋</h1>
@@ -771,7 +791,7 @@
     <div class="filter-bar">
       <div class="filter-field">
         <label for="filterName">Name Search</label>
-        <input type="text" id="filterName" placeholder="Search..." />
+        <input type="text" id="filterName" placeholder="Search customer..." />
       </div>
       <div class="filter-field">
         <label for="filterDate">Date</label>
@@ -790,7 +810,7 @@
           <tr>
             <th>Date & Time</th>
             <th>Name</th>
-            <th>Payment Proof</th>
+            <th>Status</th>
             <th>Items</th>
             <th style="text-align: center;">Actions</th>
           </tr>
@@ -800,7 +820,6 @@
     </div>
   </div>
 
-  <!-- Passcode Security Modal -->
   <div class="modal-overlay hidden" id="pinModal">
     <div class="modal-box">
       <h3 style="margin-top:0; color:var(--accent); font-size: 1.1rem;">Admin Access</h3>
@@ -813,41 +832,49 @@
     </div>
   </div>
 
-  <!-- Detailed View Modal -->
   <div class="modal-overlay hidden" id="detailModal">
     <div class="detail-modal-box">
-      <h3 style="margin-top: 0; color: var(--accent); border-bottom: 1.5px solid var(--border-color); padding-bottom: 8px; font-size: 1.1rem;">Order Record & Verification</h3>
+      <h3 style="margin-top: 0; color: var(--accent); border-bottom: 1.5px solid var(--border-color); padding-bottom: 8px; font-size: 1.15rem;">Order Record & Verification</h3>
       
       <div class="detail-row"><span>Sign-Up Date:</span> <span id="dtDate"></span></div>
       <div class="detail-row"><span>Sign-Up Time:</span> <span id="dtTime"></span></div>
       <div class="detail-row"><span>Customer Name:</span> <span id="dtName"></span></div>
       <div class="detail-row"><span>Contact Number:</span> <span id="dtPhone"></span></div>
       <div class="detail-row"><span>Delivery Address:</span> <span id="dtAddress"></span></div>
-      <div class="detail-row"><span>Payment Status:</span> <span id="dtPaymentStatus"></span></div>
+      <div class="detail-row"><span>Delivery Instruction:</span> <span id="dtDeliveryInstruction" style="font-style: italic; color: #4a2e6b;"></span></div>
+      
+      <div class="detail-row" style="align-items: center;">
+        <span>Payment Status:</span> 
+        <div class="status-toggle-container">
+          <span id="dtPaymentStatusText"></span>
+          <button type="button" class="btn-toggle-status btn-set-paid" id="btnMarkPaid">Mark Paid</button>
+          <button type="button" class="btn-toggle-status btn-set-unpaid" id="btnMarkUnpaid">Mark Unpaid</button>
+        </div>
+      </div>
 
-      <div style="margin-top: 10px;">
+      <div style="margin-top: 12px;">
         <span style="font-weight: 600; font-size: 0.85rem; color: var(--accent);">Ordered Items:</span>
         <div class="items-list-box">
           <ul id="dtItemsList"></ul>
         </div>
       </div>
 
-      <div style="margin-top: 10px;">
+      <div style="margin-top: 12px;">
         <span style="font-weight: 600; font-size: 0.85rem; color: var(--accent);">Payment Screenshot / Receipt:</span>
         <div class="img-evidence-box" id="dtReceiptBox">
-          <span id="dtNoReceiptText" style="font-size: 0.8rem; color: #888;">No receipt attached</span>
+          <span id="dtNoReceiptText" style="font-size: 0.85rem; color: #888;">No receipt attached</span>
           <img id="dtReceiptImg" class="img-evidence" src="" alt="Payment Receipt" style="display:none;" />
         </div>
       </div>
 
-      <div style="margin-top: 10px;">
+      <div style="margin-top: 12px;">
         <span style="font-weight: 600; font-size: 0.85rem; color: var(--accent);">Buyer Signature:</span>
         <div class="img-evidence-box">
           <img id="dtSigImg" class="img-evidence" src="" alt="Buyer Signature" />
         </div>
       </div>
 
-      <div style="display: flex; gap: 8px; margin-top: 16px;">
+      <div style="display: flex; gap: 8px; margin-top: 18px;">
         <button type="button" id="closeDetailBtn" style="flex:1; padding: 10px; border-radius: 8px; border: 1px solid #ccc; background: #eee; cursor: pointer; font-weight: 600; min-height: 44px;">Close</button>
         <button type="button" onclick="window.print()" style="flex:1; padding: 10px; border-radius: 8px; border: none; background: var(--primary-purple); color: white; cursor: pointer; font-weight: 600; min-height: 44px;">Print Record</button>
       </div>
@@ -856,7 +883,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
     const PEPTIDE_OPTIONS = [
       "Tirzepatide 30mg",
@@ -1117,9 +1144,11 @@
       const newRecord = {
         name: document.getElementById("fullName").value.trim(),
         address: document.getElementById("address").value.trim(),
+        deliveryInstruction: document.getElementById("deliveryInstruction").value.trim() || "None",
         phone: document.getElementById("phone").value.trim(),
         items: orderedItems,
         receiptImage: uploadedReceiptBase64 || "",
+        paymentStatus: uploadedReceiptBase64 ? "Paid" : "Unpaid",
         signatureImage: signaturePad.toDataURL("image/png"),
         timestampISO: now.toISOString(),
         dateOnly: now.toLocaleDateString('en-CA'),
@@ -1134,6 +1163,7 @@
       } catch (err) {
         console.error("Firebase save error:", err);
         const stored = JSON.parse(localStorage.getItem("peptide_orders") || "[]");
+        newRecord.localId = "local_" + Date.now();
         stored.unshift(newRecord);
         localStorage.setItem("peptide_orders", JSON.stringify(stored));
         alert("Saved locally to device!");
@@ -1157,6 +1187,7 @@
     // History Controller
     let allOrders = [];
     let displayedOrders = [];
+    let currentSelectedOrder = null;
 
     async function loadHistory() {
       const tableBody = document.getElementById("historyTableBody");
@@ -1165,7 +1196,7 @@
       try {
         const q = query(collection(db, "peptide_orders"), orderBy("timestampISO", "desc"));
         const snapshot = await getDocs(q);
-        allOrders = snapshot.docs.map(doc => doc.data());
+        allOrders = snapshot.docs.map(d => ({ ...d.data(), firestoreId: d.id }));
       } catch (e) {
         console.warn("Using offline storage fallback:", e);
         allOrders = JSON.parse(localStorage.getItem("peptide_orders") || "[]");
@@ -1202,7 +1233,7 @@
           itemsSummary = `${order.peptide} (×${order.quantity || 1})`;
         }
 
-        const hasReceipt = Boolean(order.receiptImage);
+        const isPaid = (order.paymentStatus || (order.receiptImage ? "Paid" : "Unpaid")) === "Paid";
 
         const tr = document.createElement("tr");
         tr.innerHTML = `
@@ -1212,8 +1243,8 @@
           </td>
           <td><strong>${order.name}</strong></td>
           <td>
-            <span class="status-badge ${hasReceipt ? 'status-paid' : 'status-unpaid'}">
-              ${hasReceipt ? '✓ Attached' : 'No Proof'}
+            <span class="status-badge ${isPaid ? 'status-paid' : 'status-unpaid'}">
+              ${isPaid ? '✓ Paid' : 'Pending / Unpaid'}
             </span>
           </td>
           <td style="max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${itemsSummary}">
@@ -1236,24 +1267,26 @@
 
     const detailModal = document.getElementById("detailModal");
     function showDetails(order) {
+      currentSelectedOrder = order;
+
       document.getElementById("dtDate").textContent = order.formattedDate;
       document.getElementById("dtTime").textContent = order.formattedTime;
       document.getElementById("dtName").textContent = order.name;
       document.getElementById("dtPhone").textContent = order.phone;
       document.getElementById("dtAddress").textContent = order.address;
+      document.getElementById("dtDeliveryInstruction").textContent = order.deliveryInstruction || "None";
       document.getElementById("dtSigImg").src = order.signatureImage;
 
-      const dtPaymentStatus = document.getElementById("dtPaymentStatus");
+      updateStatusUI();
+
       const dtReceiptImg = document.getElementById("dtReceiptImg");
       const dtNoReceiptText = document.getElementById("dtNoReceiptText");
 
       if (order.receiptImage) {
-        dtPaymentStatus.innerHTML = `<span style="color: green; font-weight: 700;">Proof of Payment Provided</span>`;
         dtReceiptImg.src = order.receiptImage;
         dtReceiptImg.style.display = "inline-block";
         dtNoReceiptText.style.display = "none";
       } else {
-        dtPaymentStatus.innerHTML = `<span style="color: #b57a07; font-weight: 700;">No Proof Uploaded</span>`;
         dtReceiptImg.style.display = "none";
         dtNoReceiptText.style.display = "block";
       }
@@ -1275,6 +1308,43 @@
 
       detailModal.classList.remove("hidden");
     }
+
+    function updateStatusUI() {
+      const status = currentSelectedOrder.paymentStatus || (currentSelectedOrder.receiptImage ? "Paid" : "Unpaid");
+      const statusSpan = document.getElementById("dtPaymentStatusText");
+      if (status === "Paid") {
+        statusSpan.innerHTML = `<span class="status-badge status-paid">✓ Paid</span>`;
+      } else {
+        statusSpan.innerHTML = `<span class="status-badge status-unpaid">Pending / Unpaid</span>`;
+      }
+    }
+
+    async function setPaymentStatus(newStatus) {
+      if (!currentSelectedOrder) return;
+      currentSelectedOrder.paymentStatus = newStatus;
+      updateStatusUI();
+
+      if (currentSelectedOrder.firestoreId) {
+        try {
+          const docRef = doc(db, "peptide_orders", currentSelectedOrder.firestoreId);
+          await updateDoc(docRef, { paymentStatus: newStatus });
+        } catch (e) {
+          console.error("Failed to update status in Firestore:", e);
+        }
+      } else {
+        const stored = JSON.parse(localStorage.getItem("peptide_orders") || "[]");
+        const idx = stored.findIndex(o => o.timestampISO === currentSelectedOrder.timestampISO);
+        if (idx !== -1) {
+          stored[idx].paymentStatus = newStatus;
+          localStorage.setItem("peptide_orders", JSON.stringify(stored));
+        }
+      }
+
+      renderTable();
+    }
+
+    document.getElementById("btnMarkPaid").addEventListener("click", () => setPaymentStatus("Paid"));
+    document.getElementById("btnMarkUnpaid").addEventListener("click", () => setPaymentStatus("Unpaid"));
 
     document.getElementById("closeDetailBtn").addEventListener("click", () => {
       detailModal.classList.add("hidden");
