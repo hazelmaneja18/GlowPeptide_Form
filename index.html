@@ -575,7 +575,7 @@
       background: #fff;
       padding: clamp(16px, 3vw, 24px);
       border-radius: 16px;
-      max-width: 520px;
+      max-width: 540px;
       width: 100%;
       max-height: 90vh;
       overflow-y: auto;
@@ -644,6 +644,38 @@
       margin: 0;
       padding-left: 18px;
       font-size: 0.88rem;
+    }
+
+    /* Agreements Audit Checklist in Modal */
+    .agreements-audit-box {
+      background: #f8f6fc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-top: 6px;
+      font-size: 0.82rem;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .agreement-check-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      line-height: 1.3;
+    }
+
+    .check-yes {
+      color: #0b733b;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .check-no {
+      color: #b3141a;
+      font-weight: bold;
+      flex-shrink: 0;
     }
 
     .img-evidence-box {
@@ -743,27 +775,54 @@
       <div class="cards-grid">
         <div class="info-card">
           <div class="card-title">Medical Disclaimer</div>
-          <label class="checkbox-item"><input type="checkbox" required /><span>Used under medical supervision / non-OTC.</span></label>
-          <label class="checkbox-item"><input type="checkbox" required /><span>Seller is not a licensed physician.</span></label>
-          <label class="checkbox-item"><input type="checkbox" required /><span>I have consulted or will consult a doctor.</span></label>
-          <label class="checkbox-item"><input type="checkbox" required /><span>Results vary and risks exist.</span></label>
+          <label class="checkbox-item">
+            <input type="checkbox" id="chk_med_supervision" required />
+            <span>Used under medical supervision / non-OTC.</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" id="chk_med_provider" required />
+            <span>Seller is not a licensed physician.</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" id="chk_med_doctor" required />
+            <span>I have consulted or will consult a doctor.</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" id="chk_med_risks" required />
+            <span>Results vary and risks exist.</span>
+          </label>
         </div>
 
         <div class="info-card">
           <div class="card-title">Buyer Eligibility</div>
-          <label class="checkbox-item"><input type="checkbox" required /><span>I am at least 18 years old.</span></label>
-          <label class="checkbox-item"><input type="checkbox" required /><span>I am not pregnant or breastfeeding.</span></label>
-          <label class="checkbox-item"><input type="checkbox" required /><span>Aware of health condition & take full responsibility.</span></label>
+          <label class="checkbox-item">
+            <input type="checkbox" id="chk_elig_18" required />
+            <span>I am at least 18 years old.</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" id="chk_elig_pregnant" required />
+            <span>I am not pregnant or breastfeeding.</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" id="chk_elig_health" required />
+            <span>Aware of health condition & take full responsibility.</span>
+          </label>
         </div>
 
         <div class="info-card">
           <div class="card-title">Liability Waiver</div>
-          <label class="checkbox-item"><input type="checkbox" required /><span>I release seller from all liabilities and outcomes.</span></label>
+          <label class="checkbox-item">
+            <input type="checkbox" id="chk_waiver_liability" required />
+            <span>I release seller from all liabilities and outcomes.</span>
+          </label>
         </div>
 
         <div class="info-card">
           <div class="card-title">Refund Policy</div>
-          <label class="checkbox-item"><input type="checkbox" required /><span>All sales final. No Return / No Refund agreed.</span></label>
+          <label class="checkbox-item">
+            <input type="checkbox" id="chk_refund_policy" required />
+            <span>All sales final. No Return / No Refund agreed.</span>
+          </label>
         </div>
       </div>
 
@@ -857,6 +916,12 @@
         <div class="items-list-box">
           <ul id="dtItemsList"></ul>
         </div>
+      </div>
+
+      <div style="margin-top: 12px;">
+        <span style="font-weight: 600; font-size: 0.85rem; color: var(--accent);">Signed Disclaimers & Eligibility Audit:</span>
+        <div class="agreements-audit-box" id="dtAgreementsBox">
+          </div>
       </div>
 
       <div style="margin-top: 12px;">
@@ -1107,7 +1172,7 @@
 
     document.getElementById("clearBtn").addEventListener("click", () => signaturePad.clear());
 
-    // Submit Order
+    // Submit Order & Save Full Checklist
     document.getElementById("orderForm").addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -1136,6 +1201,19 @@
         return;
       }
 
+      // Detailed Checkbox Audit Object
+      const agreementsAudit = {
+        med_supervision: document.getElementById("chk_med_supervision").checked,
+        med_provider: document.getElementById("chk_med_provider").checked,
+        med_doctor: document.getElementById("chk_med_doctor").checked,
+        med_risks: document.getElementById("chk_med_risks").checked,
+        elig_18: document.getElementById("chk_elig_18").checked,
+        elig_pregnant: document.getElementById("chk_elig_pregnant").checked,
+        elig_health: document.getElementById("chk_elig_health").checked,
+        waiver_liability: document.getElementById("chk_waiver_liability").checked,
+        refund_policy: document.getElementById("chk_refund_policy").checked
+      };
+
       const submitBtn = document.getElementById("submitBtn");
       submitBtn.disabled = true;
       submitBtn.textContent = "Saving...";
@@ -1147,6 +1225,7 @@
         deliveryInstruction: document.getElementById("deliveryInstruction").value.trim() || "None",
         phone: document.getElementById("phone").value.trim(),
         items: orderedItems,
+        agreements: agreementsAudit,
         receiptImage: uploadedReceiptBase64 || "",
         paymentStatus: uploadedReceiptBase64 ? "Paid" : "Unpaid",
         signatureImage: signaturePad.toDataURL("image/png"),
@@ -1278,6 +1357,35 @@
       document.getElementById("dtSigImg").src = order.signatureImage;
 
       updateStatusUI();
+
+      // Render Checkbox Audit Trail
+      const ag = order.agreements || {};
+      const agBox = document.getElementById("dtAgreementsBox");
+      
+      const disclaimerItems = [
+        { label: "Used under medical supervision / non-OTC", key: "med_supervision" },
+        { label: "Seller is not a licensed physician", key: "med_provider" },
+        { label: "Consulted or will consult a doctor", key: "med_doctor" },
+        { label: "Results vary and risks exist", key: "med_risks" },
+        { label: "Confirmed at least 18 years old", key: "elig_18" },
+        { label: "Not pregnant or breastfeeding", key: "elig_pregnant" },
+        { label: "Aware of health condition & full responsibility", key: "elig_health" },
+        { label: "Liability Waiver: Released seller from liability", key: "waiver_liability" },
+        { label: "Refund Policy: All sales final / No return or refund", key: "refund_policy" }
+      ];
+
+      agBox.innerHTML = "";
+      disclaimerItems.forEach(item => {
+        // Fallback to true if previous legacy record had passed submission
+        const isChecked = ag[item.key] !== undefined ? ag[item.key] : true;
+        const line = document.createElement("div");
+        line.className = "agreement-check-line";
+        line.innerHTML = `
+          <span class="${isChecked ? 'check-yes' : 'check-no'}">${isChecked ? '✓' : '✗'}</span>
+          <span>${item.label}</span>
+        `;
+        agBox.appendChild(line);
+      });
 
       const dtReceiptImg = document.getElementById("dtReceiptImg");
       const dtNoReceiptText = document.getElementById("dtNoReceiptText");
