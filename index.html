@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <title>Glow Peptide Order & History</title>
   <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
   
@@ -23,34 +23,36 @@
     body {
       background: #fdfbff;
       color: var(--text-dark);
-      padding: 16px;
+      padding: clamp(8px, 2vw, 16px);
       margin: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
+      min-height: 100vh;
     }
 
-    /* Top Navigation Tabs */
+    /* Fluid Navigation Tabs */
     .view-tabs {
       display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
+      gap: 8px;
+      margin-bottom: 16px;
       width: 100%;
-      max-width: 800px;
+      max-width: 720px;
     }
 
     .tab-btn {
       flex: 1;
-      padding: 12px;
+      padding: 12px 8px;
       border: 2px solid var(--primary-purple);
       background: #fff;
       color: var(--primary-purple);
-      font-size: 0.95rem;
+      font-size: clamp(0.85rem, 2.5vw, 0.95rem);
       font-weight: 700;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
       text-align: center;
       transition: all 0.2s ease;
+      min-height: 44px;
     }
 
     .tab-btn.active {
@@ -58,51 +60,62 @@
       color: #fff;
     }
 
+    /* Fluid App Card */
     .app-container {
       background: #ffffff;
-      max-width: 800px;
       width: 100%;
-      border: 2px solid var(--border-color);
+      max-width: 720px;
+      border: 1.5px solid var(--border-color);
       border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 4px 18px rgba(122, 94, 167, 0.1);
+      padding: clamp(14px, 3.5vw, 24px);
+      box-shadow: 0 4px 18px rgba(122, 94, 167, 0.08);
     }
 
     h1 {
       text-align: center;
       color: var(--accent);
-      font-size: 1.5rem;
-      margin: 0 0 20px 0;
+      font-size: clamp(1.2rem, 4vw, 1.5rem);
+      margin: 0 0 18px 0;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
-    /* Form Fields */
+    /* Inputs (16px base font prevents iOS auto-zoom) */
     .input-grid {
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
       margin-bottom: 20px;
     }
 
     .input-group {
       display: flex;
-      align-items: center;
-      gap: 12px;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    @media (min-width: 580px) {
+      .input-group {
+        flex-direction: row;
+        align-items: center;
+      }
+      .input-group label {
+        min-width: 120px;
+      }
     }
 
     .input-group label {
       font-weight: 600;
-      min-width: 120px;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
 
     .input-group input {
       flex: 1;
+      width: 100%;
       border: none;
       border-bottom: 1.5px solid var(--border-color);
-      padding: 6px 4px;
-      font-size: 1rem;
+      padding: 8px 4px;
+      font-size: 16px;
       outline: none;
       background: transparent;
     }
@@ -111,29 +124,36 @@
       border-bottom-color: var(--primary-purple);
     }
 
-    /* Peptides Selection Grid */
+    /* Mobile Responsive Peptide Grid */
     .peptides-container {
       background: #fdfaff;
       border: 1.5px solid var(--border-color);
       border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 24px;
+      padding: clamp(10px, 2.5vw, 16px);
+      margin-bottom: 20px;
     }
 
     .peptides-title {
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       color: var(--accent);
       margin-bottom: 12px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    @media (min-width: 480px) {
+      .peptides-title {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
     }
 
     .peptide-row {
-      display: grid;
-      grid-template-columns: 28px 1fr 100px;
-      gap: 10px;
+      display: flex;
+      gap: 8px;
       align-items: center;
       margin-bottom: 10px;
     }
@@ -141,54 +161,54 @@
     .peptide-num {
       font-weight: 700;
       color: var(--primary-purple);
-      font-size: 0.9rem;
+      font-size: 0.85rem;
+      width: 18px;
       text-align: center;
+      flex-shrink: 0;
     }
 
     .peptide-select {
+      flex: 1;
+      min-width: 0;
       border: 1px solid var(--border-color);
-      border-radius: 6px;
-      padding: 8px 10px;
-      font-size: 0.95rem;
+      border-radius: 8px;
+      padding: 10px 8px;
+      font-size: 16px;
       outline: none;
       background-color: #fff;
       color: var(--text-dark);
+      min-height: 44px;
     }
 
-    .peptide-row input[type="number"] {
+    .peptide-qty {
+      width: 68px;
+      flex-shrink: 0;
       border: 1px solid var(--border-color);
-      border-radius: 6px;
-      padding: 8px 8px;
-      font-size: 0.95rem;
+      border-radius: 8px;
+      padding: 10px 4px;
+      font-size: 16px;
       text-align: center;
       outline: none;
       background-color: #fff;
+      min-height: 44px;
     }
 
     .peptide-select:focus,
-    .peptide-row input:focus {
+    .peptide-qty:focus {
       border-color: var(--primary-purple);
     }
 
+    /* Consent Cards */
     .cards-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 24px;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
     }
 
-    @media (max-width: 650px) {
+    @media (min-width: 580px) {
       .cards-grid {
-        grid-template-columns: 1fr;
-      }
-      .input-group {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
-      }
-      .peptide-row {
-        grid-template-columns: 24px 1fr 80px;
-        gap: 6px;
+        grid-template-columns: 1fr 1fr;
       }
     }
 
@@ -196,17 +216,17 @@
       background: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 12px;
-      padding: 14px;
+      padding: 12px;
     }
 
     .card-title {
       font-weight: 700;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       text-transform: uppercase;
       color: var(--accent);
       border-bottom: 1px solid var(--border-color);
-      padding-bottom: 6px;
-      margin-bottom: 10px;
+      padding-bottom: 4px;
+      margin-bottom: 8px;
       text-align: center;
     }
 
@@ -222,27 +242,34 @@
 
     .checkbox-item input {
       margin-top: 2px;
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
       accent-color: var(--primary-purple);
     }
 
+    /* Signature Area */
     .signature-pad-wrapper {
       border: 1.5px dashed var(--primary-purple);
-      border-radius: 8px;
+      border-radius: 10px;
       position: relative;
       background: #fafafa;
-      height: 160px;
+      height: 150px;
       touch-action: none;
+      width: 100%;
     }
 
     canvas {
       width: 100%;
       height: 100%;
-      border-radius: 8px;
+      border-radius: 10px;
+      display: block;
     }
 
     .sig-toolbar {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       margin-top: 6px;
       font-size: 0.8rem;
       color: #666;
@@ -252,10 +279,10 @@
       background: none;
       border: none;
       color: #a33b3b;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       cursor: pointer;
       text-decoration: underline;
-      padding: 0;
+      padding: 6px 0;
     }
 
     .btn-submit {
@@ -265,75 +292,89 @@
       border: none;
       padding: 14px;
       font-size: 1rem;
-      font-weight: 600;
-      border-radius: 8px;
+      font-weight: 700;
+      border-radius: 10px;
       cursor: pointer;
-      margin-top: 20px;
+      margin-top: 18px;
+      min-height: 48px;
     }
 
-    /* History & Filter Section */
+    /* Admin Filters & Log */
     .admin-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 14px;
+      gap: 10px;
     }
 
     .btn-lock {
       background: #e2d9ec;
       border: 1px solid var(--primary-purple);
       color: var(--accent);
-      padding: 6px 12px;
+      padding: 8px 12px;
       border-radius: 6px;
       font-size: 0.8rem;
       font-weight: 600;
       cursor: pointer;
+      white-space: nowrap;
     }
 
     .filter-bar {
       display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 10px;
       background: var(--card-bg);
-      padding: 14px;
+      padding: 12px;
       border-radius: 10px;
       border: 1px solid var(--border-color);
-      margin-bottom: 16px;
+      margin-bottom: 14px;
+    }
+
+    @media (min-width: 480px) {
+      .filter-bar {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
     }
 
     .filter-field {
       flex: 1;
-      min-width: 180px;
+      min-width: 140px;
       display: flex;
       flex-direction: column;
       gap: 4px;
     }
 
     .filter-field label {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 700;
       text-transform: uppercase;
       color: var(--accent);
     }
 
     .filter-field input {
-      padding: 8px;
+      padding: 10px;
       border: 1px solid var(--border-color);
       border-radius: 6px;
-      font-size: 0.9rem;
+      font-size: 16px;
+      background: #fff;
     }
 
     .table-wrapper {
+      width: 100%;
       overflow-x: auto;
       border: 1px solid var(--border-color);
-      border-radius: 8px;
+      border-radius: 10px;
+      -webkit-overflow-scrolling: touch;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       text-align: left;
+      min-width: 460px;
     }
 
     thead {
@@ -342,75 +383,69 @@
     }
 
     th, td {
-      padding: 10px 12px;
+      padding: 10px 8px;
       border-bottom: 1px solid var(--border-color);
       vertical-align: middle;
-    }
-
-    tbody tr:hover {
-      background: #faf8fc;
     }
 
     .btn-view-detail {
       background: var(--primary-purple);
       color: #fff;
       border: none;
-      padding: 6px 12px;
-      border-radius: 5px;
+      padding: 8px 10px;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 600;
       white-space: nowrap;
     }
 
-    /* Modals */
+    /* Touch Modals */
     .modal-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
       display: flex;
       justify-content: center;
       align-items: center;
       z-index: 100;
-      padding: 16px;
+      padding: 12px;
     }
 
     .modal-box {
       background: #fff;
-      padding: 24px;
-      border-radius: 12px;
-      max-width: 340px;
+      padding: 20px;
+      border-radius: 14px;
+      max-width: 320px;
       width: 100%;
       text-align: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
     }
 
     .modal-box input {
       width: 100%;
       padding: 10px;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       text-align: center;
       letter-spacing: 4px;
-      margin: 14px 0;
+      margin: 12px 0;
       border: 1.5px solid var(--border-color);
-      border-radius: 6px;
+      border-radius: 8px;
     }
 
     .modal-actions {
       display: flex;
-      gap: 10px;
+      gap: 8px;
     }
 
     .modal-actions button {
       flex: 1;
       padding: 10px;
-      border-radius: 6px;
+      border-radius: 8px;
       font-weight: 600;
       cursor: pointer;
       border: none;
+      min-height: 44px;
     }
 
     .btn-verify {
@@ -425,23 +460,30 @@
 
     .detail-modal-box {
       background: #fff;
-      padding: 24px;
+      padding: clamp(16px, 3vw, 24px);
       border-radius: 16px;
-      max-width: 520px;
+      max-width: 480px;
       width: 100%;
       max-height: 90vh;
       overflow-y: auto;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      border: 2px solid var(--border-color);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      border: 1.5px solid var(--border-color);
       text-align: left;
     }
 
     .detail-row {
       display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
+      flex-direction: column;
+      padding: 6px 0;
       border-bottom: 1px solid #f0eaf7;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
+    }
+
+    @media (min-width: 420px) {
+      .detail-row {
+        flex-direction: row;
+        justify-content: space-between;
+      }
     }
 
     .detail-row span:first-child {
@@ -453,28 +495,28 @@
       background: #fbf9fd;
       border: 1px solid var(--border-color);
       border-radius: 8px;
-      padding: 10px 14px;
-      margin-top: 8px;
+      padding: 8px 12px;
+      margin-top: 6px;
     }
 
     .items-list-box ul {
       margin: 0;
-      padding-left: 20px;
-      font-size: 0.9rem;
+      padding-left: 18px;
+      font-size: 0.85rem;
     }
 
     .detail-signature-container {
-      margin-top: 16px;
+      margin-top: 12px;
       border: 1.5px dashed var(--border-color);
       border-radius: 8px;
-      padding: 10px;
+      padding: 6px;
       text-align: center;
       background: #fafafa;
     }
 
     .detail-signature-img {
       max-width: 100%;
-      height: 120px;
+      height: 110px;
       object-fit: contain;
     }
 
@@ -486,8 +528,8 @@
 <body>
 
   <div class="view-tabs">
-    <button class="tab-btn active" id="tabForm">Customer Order Form</button>
-    <button class="tab-btn" id="tabHistory">🔒 Sign-up History & Logs</button>
+    <button class="tab-btn active" id="tabForm">Order Form</button>
+    <button class="tab-btn" id="tabHistory">🔒 History & Logs</button>
   </div>
 
   <div class="app-container" id="formView">
@@ -496,65 +538,65 @@
       <div class="input-grid">
         <div class="input-group">
           <label for="fullName">Name:</label>
-          <input type="text" id="fullName" required />
+          <input type="text" id="fullName" placeholder="Full name" required />
         </div>
         <div class="input-group">
           <label for="address">Address:</label>
-          <input type="text" id="address" required />
+          <input type="text" id="address" placeholder="Delivery address" required />
         </div>
         <div class="input-group">
           <label for="phone">Phone number:</label>
-          <input type="tel" id="phone" required />
+          <input type="tel" id="phone" placeholder="Mobile number" required />
         </div>
       </div>
 
       <div class="peptides-container">
         <div class="peptides-title">
-          <span>Choose Items to Order (Up to 6)</span>
-          <span style="font-size: 0.75rem; color: #777; font-weight: normal;">Select product & quantity</span>
+          <span>Choose Items (Up to 6)</span>
+          <span style="font-size: 0.75rem; color: #777; font-weight: normal;">Product & quantity</span>
         </div>
         
         <div class="peptide-row">
           <span class="peptide-num">1</span>
           <select class="peptide-select" required>
-            <option value="">-- Select Product 1 (Required) --</option>
+            <option value="">-- Product 1 (Required) --</option>
           </select>
-          <input type="number" class="peptide-qty" placeholder="Qty" min="1" value="1" required />
+          <input type="number" class="peptide-qty" min="1" value="1" placeholder="Qty" required />
         </div>
         <div class="peptide-row">
           <span class="peptide-num">2</span>
           <select class="peptide-select">
-            <option value="">-- Select Product 2 (Optional) --</option>
+            <option value="">-- Product 2 (Optional) --</option>
           </select>
-          <input type="number" class="peptide-qty" placeholder="Qty" min="1" value="1" />
+          <input type="number" class="peptide-qty" min="1" value="1" placeholder="Qty" />
         </div>
         <div class="peptide-row">
           <span class="peptide-num">3</span>
           <select class="peptide-select">
-            <option value="">-- Select Product 3 (Optional) --</option>
+            <option value="">-- Product 3 (Optional) --</option>
           </select>
-          <input type="number" class="peptide-qty" placeholder="Qty" min="1" value="1" />
+          <input type="number" class="peptide-qty" min="1" value="1" placeholder="Qty" />
         </div>
         <div class="peptide-row">
           <span class="peptide-num">4</span>
           <select class="peptide-select">
-            <option value="">-- Select Product 4 (Optional) --</option>
+            <option value="">-- Product 4 (Optional) --</option>
           </select>
-          <input type="number" class="peptide-qty" placeholder="Qty" min="1" value="1" />
+          <input type="number" class="peptide-qty" min="1" value="1" placeholder="Qty" />
         </div>
         <div class="peptide-row">
           <span class="peptide-num">5</span>
           <select class="peptide-select">
-            <option value="">-- Select Product 5 (Optional) --</option>
+            <option value="">-- Product 5 (Optional) --</option>
           </select>
-          <input type="number" class="peptide-qty" placeholder="Qty" min="1" value="1" />
+          <input type="number" class="peptide-qty" min="1" value="1" placeholder="Qty" />
         </div>
         <div class="peptide-row">
           <span class="peptide-num">6</span>
           <select class="peptide-select">
-            <option value="">-- Select Product 6 (Optional) --</option>
+            <option value="">-- Product 6 (Optional) --</option>
           </select>
-          <input type="number" class="peptide-qty" placeholder="Qty" min="1" value="1" />
+          <input type="number" class="peptide-qty" min="1" value="1" placeholder="Qty" />
         </div>
       </div>
 
@@ -586,13 +628,13 @@
       </div>
 
       <div>
-        <label style="font-weight: 600; font-size: 0.95rem;">Draw Buyer's Signature:</label>
-        <div class="signature-pad-wrapper" style="margin-top: 8px;">
+        <label style="font-weight: 600; font-size: 0.9rem;">Draw Buyer's Signature:</label>
+        <div class="signature-pad-wrapper" style="margin-top: 6px;">
           <canvas id="signatureCanvas"></canvas>
         </div>
         <div class="sig-toolbar">
-          <span>Sign with finger or stylus</span>
-          <button type="button" class="btn-clear" id="clearBtn">Clear Signature</button>
+          <span>Finger or stylus</span>
+          <button type="button" class="btn-clear" id="clearBtn">Clear</button>
         </div>
       </div>
 
@@ -602,25 +644,25 @@
 
   <div class="app-container hidden" id="historyView">
     <div class="admin-header">
-      <h1 style="margin: 0; font-size: 1.25rem;">Sign-Up History Log 📋</h1>
-      <button type="button" class="btn-lock" id="lockHistoryBtn">🔒 Lock / Exit</button>
+      <h1 style="margin: 0; font-size: 1.15rem;">History Log 📋</h1>
+      <button type="button" class="btn-lock" id="lockHistoryBtn">🔒 Exit</button>
     </div>
     
     <div class="filter-bar">
       <div class="filter-field">
-        <label for="filterName">Filter by Name</label>
-        <input type="text" id="filterName" placeholder="Search customer name..." />
+        <label for="filterName">Name Search</label>
+        <input type="text" id="filterName" placeholder="Search..." />
       </div>
       <div class="filter-field">
-        <label for="filterDate">Filter by Date</label>
+        <label for="filterDate">Date</label>
         <input type="date" id="filterDate" />
       </div>
-      <div style="align-self: flex-end;">
-        <button type="button" id="resetFilters" style="padding: 8px 12px; background: #ddd; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">Reset</button>
+      <div style="display: flex; align-items: flex-end;">
+        <button type="button" id="resetFilters" style="padding: 10px 14px; background: #e0d7ec; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; width: 100%;">Reset</button>
       </div>
     </div>
 
-    <div style="font-size: 0.85rem; margin-bottom: 8px; font-weight: 600;" id="recordCount">Records found: 0</div>
+    <div style="font-size: 0.8rem; margin-bottom: 8px; font-weight: 600;" id="recordCount">Records found: 0</div>
 
     <div class="table-wrapper">
       <table>
@@ -629,7 +671,7 @@
             <th>Date & Time</th>
             <th>Name</th>
             <th>Phone</th>
-            <th>Items Ordered</th>
+            <th>Items</th>
             <th style="text-align: center;">Actions</th>
           </tr>
         </thead>
@@ -640,9 +682,9 @@
 
   <div class="modal-overlay hidden" id="pinModal">
     <div class="modal-box">
-      <h3 style="margin-top:0; color:var(--accent);">Admin Access</h3>
-      <p style="font-size: 0.85rem; color: #666; margin: 0;">Enter passcode to view logs:</p>
-      <input type="password" id="pinInput" placeholder="••••••" maxlength="10" />
+      <h3 style="margin-top:0; color:var(--accent); font-size: 1.1rem;">Admin Access</h3>
+      <p style="font-size: 0.8rem; color: #666; margin: 0;">Enter passcode to view logs:</p>
+      <input type="password" id="pinInput" placeholder="••••••" maxlength="10" inputmode="numeric" />
       <div class="modal-actions">
         <button type="button" class="btn-cancel" id="cancelPinBtn">Cancel</button>
         <button type="button" class="btn-verify" id="verifyPinBtn">Unlock</button>
@@ -652,32 +694,32 @@
 
   <div class="modal-overlay hidden" id="detailModal">
     <div class="detail-modal-box">
-      <h3 style="margin-top: 0; color: var(--accent); border-bottom: 2px solid var(--border-color); padding-bottom: 8px;">Order Details & Signature Record</h3>
+      <h3 style="margin-top: 0; color: var(--accent); border-bottom: 1.5px solid var(--border-color); padding-bottom: 8px; font-size: 1.1rem;">Order Record</h3>
       
       <div class="detail-row"><span>Sign-Up Date:</span> <span id="dtDate"></span></div>
       <div class="detail-row"><span>Sign-Up Time:</span> <span id="dtTime"></span></div>
       <div class="detail-row"><span>Customer Name:</span> <span id="dtName"></span></div>
       <div class="detail-row"><span>Contact Number:</span> <span id="dtPhone"></span></div>
       <div class="detail-row"><span>Delivery Address:</span> <span id="dtAddress"></span></div>
-      <div class="detail-row"><span>Disclaimers & Waivers:</span> <span style="color: green; font-weight: 600;">✓ All Agreed</span></div>
+      <div class="detail-row"><span>Disclaimers:</span> <span style="color: green; font-weight: 600;">✓ Agreed</span></div>
 
-      <div style="margin-top: 14px;">
-        <span style="font-weight: 600; font-size: 0.9rem; color: var(--accent);">Ordered Peptides:</span>
+      <div style="margin-top: 12px;">
+        <span style="font-weight: 600; font-size: 0.85rem; color: var(--accent);">Ordered Items:</span>
         <div class="items-list-box">
           <ul id="dtItemsList"></ul>
         </div>
       </div>
 
-      <div style="margin-top: 14px;">
-        <span style="font-weight: 600; font-size: 0.9rem; color: var(--accent);">Recorded Buyer Signature:</span>
+      <div style="margin-top: 12px;">
+        <span style="font-weight: 600; font-size: 0.85rem; color: var(--accent);">Buyer Signature:</span>
         <div class="detail-signature-container">
           <img id="dtSigImg" class="detail-signature-img" src="" alt="Buyer Signature" />
         </div>
       </div>
 
-      <div style="display: flex; gap: 10px; margin-top: 20px;">
-        <button type="button" id="closeDetailBtn" style="flex:1; padding: 10px; border-radius: 6px; border: 1px solid #ccc; background: #eee; cursor: pointer; font-weight: 600;">Close</button>
-        <button type="button" onclick="window.print()" style="flex:1; padding: 10px; border-radius: 6px; border: none; background: var(--primary-purple); color: white; cursor: pointer; font-weight: 600;">Print Record</button>
+      <div style="display: flex; gap: 8px; margin-top: 18px;">
+        <button type="button" id="closeDetailBtn" style="flex:1; padding: 10px; border-radius: 8px; border: 1px solid #ccc; background: #eee; cursor: pointer; font-weight: 600; min-height: 44px;">Close</button>
+        <button type="button" onclick="window.print()" style="flex:1; padding: 10px; border-radius: 8px; border: none; background: var(--primary-purple); color: white; cursor: pointer; font-weight: 600; min-height: 44px;">Print</button>
       </div>
     </div>
   </div>
@@ -716,7 +758,6 @@
       });
     });
 
-    // Your actual configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAhbP3cyrJrH46h-xwiutZfbTG0PmqTlLU",
       authDomain: "glowpeptide-form.firebaseapp.com",
@@ -795,23 +836,36 @@
       switchToForm();
     });
 
-    // Signature Pad Initialization
+    // Mobile-Safe Signature Pad Initialization
     const canvas = document.getElementById("signatureCanvas");
-    const signaturePad = new SignaturePad(canvas, { backgroundColor: 'rgba(255, 255, 255, 0)', penColor: '#20183b' });
+    const signaturePad = new SignaturePad(canvas, { 
+      backgroundColor: 'rgba(255, 255, 255, 0)', 
+      penColor: '#20183b' 
+    });
 
     function resizeCanvas() {
       const ratio = Math.max(window.devicePixelRatio || 1, 1);
+      // Preserve drawing if rotating phone
+      let data = null;
+      if (!signaturePad.isEmpty()) {
+        data = signaturePad.toData();
+      }
       canvas.width = canvas.offsetWidth * ratio;
       canvas.height = canvas.offsetHeight * ratio;
       canvas.getContext("2d").scale(ratio, ratio);
       signaturePad.clear();
+      if (data) {
+        signaturePad.fromData(data);
+      }
     }
+
     window.addEventListener("resize", resizeCanvas);
+    window.addEventListener("orientationchange", () => setTimeout(resizeCanvas, 200));
     resizeCanvas();
 
     document.getElementById("clearBtn").addEventListener("click", () => signaturePad.clear());
 
-    // Submit Order
+    // Submit Action
     document.getElementById("orderForm").addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -854,22 +908,20 @@
         timestampISO: now.toISOString(),
         dateOnly: now.toLocaleDateString('en-CA'),
         formattedDate: now.toLocaleDateString(),
-        formattedTime: now.toLocaleTimeString()
+        formattedTime: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
 
       try {
         await addDoc(collection(db, "peptide_orders"), newRecord);
-
-        alert("Sign-up and order recorded successfully!");
+        alert("Order submitted successfully!");
         document.getElementById("orderForm").reset();
         signaturePad.clear();
       } catch (err) {
         console.error("Firebase save error:", err);
-        // Fallback save to local storage if network or permissions fail
         const stored = JSON.parse(localStorage.getItem("peptide_orders") || "[]");
         stored.unshift(newRecord);
         localStorage.setItem("peptide_orders", JSON.stringify(stored));
-        alert("Order saved locally to device! (Make sure your Firestore security rules allow read/write).");
+        alert("Saved locally to phone storage!");
         document.getElementById("orderForm").reset();
         signaturePad.clear();
       } finally {
@@ -884,14 +936,14 @@
 
     async function loadHistory() {
       const tableBody = document.getElementById("historyTableBody");
-      tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 20px;">Loading records from Firebase...</td></tr>`;
+      tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 18px;">Loading records...</td></tr>`;
 
       try {
         const q = query(collection(db, "peptide_orders"), orderBy("timestampISO", "desc"));
         const snapshot = await getDocs(q);
         allOrders = snapshot.docs.map(doc => doc.data());
       } catch (e) {
-        console.warn("Firestore read failed, falling back to device local backup:", e);
+        console.warn("Using offline storage fallback:", e);
         allOrders = JSON.parse(localStorage.getItem("peptide_orders") || "[]");
       }
 
@@ -914,7 +966,7 @@
       tableBody.innerHTML = "";
 
       if (displayedOrders.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#888; padding: 24px;">No matching records found.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#888; padding: 20px;">No records found.</td></tr>`;
         return;
       }
 
@@ -934,11 +986,11 @@
           </td>
           <td><strong>${order.name}</strong></td>
           <td>${order.phone}</td>
-          <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${itemsSummary}">
+          <td style="max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${itemsSummary}">
             ${itemsSummary}
           </td>
           <td style="text-align: center;">
-            <button type="button" class="btn-view-detail" data-index="${index}">View Info & Sig</button>
+            <button type="button" class="btn-view-detail" data-index="${index}">View</button>
           </td>
         `;
         tableBody.appendChild(tr);
@@ -967,12 +1019,12 @@
       if (order.items && Array.isArray(order.items)) {
         order.items.forEach(it => {
           const li = document.createElement("li");
-          li.innerHTML = `<strong>${it.name}</strong> — Quantity: <strong>${it.quantity}</strong>`;
+          li.innerHTML = `<strong>${it.name}</strong> — Qty: <strong>${it.quantity}</strong>`;
           itemsList.appendChild(li);
         });
       } else if (order.peptide) {
         const li = document.createElement("li");
-        li.innerHTML = `<strong>${order.peptide}</strong> — Quantity: <strong>${order.quantity || 1}</strong>`;
+        li.innerHTML = `<strong>${order.peptide}</strong> — Qty: <strong>${order.quantity || 1}</strong>`;
         itemsList.appendChild(li);
       }
 
