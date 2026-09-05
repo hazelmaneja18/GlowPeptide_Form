@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glow Peptide Order & History</title>
+  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+  
+  <style>
+    :root {
+      --primary-purple: #7a5ea7;
+      --card-bg: #f8f3fc;
+      --border-color: #d1bfe3;
+      --text-dark: #3a3347;
+      --accent: #55347a;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: #fdfbff;
+      color: var(--text-dark);
+      padding: 16px;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Top Navigation Tabs */
+    .view-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 12px;
+      border: 2px solid var(--primary-purple);
+      background: #fff;
+      color: var(--primary-purple);
+      font-size: 0.95rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn.active {
+      background: var(--primary-purple);
+      color: #fff;
+    }
+
+    .app-container {
+      background: #ffffff;
+      max-width: 800px;
+      width: 100%;
+      border: 2px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 18px rgba(122, 94, 167, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--accent);
+      font-size: 1.5rem;
+      margin: 0 0 20px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Form Fields */
+    .input-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .input-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .input-group label {
+      font-weight: 600;
+      min-width: 120px;
+      font-size: 0.95rem;
+    }
+
+    .input-group input {
+      flex: 1;
+      border: none;
+      border-bottom: 1.5px solid var(--border-color);
+      padding: 6px 4px;
+      font-size: 1rem;
+      outline: none;
+      background: transparent;
+    }
+
+    .input-group input:focus {
+      border-bottom-color: var(--primary-purple);
+    }
+
+    /* Peptides Selection Grid */
+    .peptides-container {
+      background: #fdfaff;
+      border: 1.5px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+
+    .peptides-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--accent);
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .peptide-row {
+      display: grid;
+      grid-template-columns: 28px 1fr 100px;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .peptide-num {
+      font-weight: 700;
+      color: var(--primary-purple);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .peptide-select {
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 0.95rem;
+      outline: none;
+      background-color: #fff;
+      color: var(--text-dark);
+    }
+
+    .peptide-row input[type="number"] {
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 8px 8px;
+      font-size: 0.95rem;
+      text-align: center;
+      outline: none;
+      background-color: #fff;
+    }
+
+    .peptide-select:focus,
+    .peptide-row input:focus {
+      border-color: var(--primary-purple);
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 650px) {
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+      .input-group {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+      .peptide-row {
+        grid-template-columns: 24px 1fr 80px;
+        gap: 6px;
+      }
+    }
+
+    .info-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .card-title {
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      color: var(--accent);
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 0.8rem;
+      line-height: 1.35;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+
+    .checkbox-item input {
+      margin-top: 2px;
+      accent-color: var(--primary-purple);
+    }
+
+    .signature-pad-wrapper {
+      border: 1.5px dashed var(--primary-purple);
+      border-radius: 8px;
+      position: relative;
+      background: #fafafa;
+      height: 160px;
+      touch-action: none;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+    }
+
+    .sig-toolbar {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    .btn-clear {
+      background: none;
+      border: none;
+      color: #a33b3b;
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--primary-purple);
+      color: #fff;
+      border: none;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    /* History & Filter Section */
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .btn-lock {
+      background: #e2d9ec;
+      border: 1px solid var(--primary-purple);
+      color: var(--accent);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      background: var(--card-bg);
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 16px;
+    }
+
+    .filter-field {
+      flex: 1;
+      min-width: 180px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .filter-field label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .filter-field input {
+      padding: 8px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+
+    thead {
+      background: #eee5f7;
+      color: var(--accent);
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: middle;
+    }
+
+    tbody tr:hover {
+      background: #faf8fc;
+    }
+
+    .btn-view-detail {
+      background: var(--primary-purple);
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      padding: 16px;
+    }
+
+    .modal-box {
+      background: #fff;
+      padding: 24px;
+      border-radius: 12px;
+      max-width: 340px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .modal-box input {
+      width: 100%;
+      padding: 10px;
+      font-size: 1.1rem;
+      text-align: center;
+      letter-spacing: 4px;
+      margin: 14px 0;
+      border: 1.5px solid var(--border-color);
+      border-radius: 6px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .modal-actions button {
+      flex: 1;
+      padding: 10px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-verify {
+      background: var(--primary-purple);
+      color: white;
+    }
+
+    .btn-cancel {
+      background: #e2e2e2;
+      color: #333;
+    }
+
+    .detail-modal-box {
+      background: #fff;
+      padding: 24px;
+      border-radius: 16px;
+      max-width: 520px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      border: 2px solid var(--border-color);
+      text-align: left;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #f0eaf7;
+      font-size: 0.9rem;
+    }
+
+    .detail-row span:first-child {
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .items-list-box {
+      background: #fbf9fd;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-top: 8px;
+    }
+
+    .items-list-box ul {
+      margin: 0;
+      padding-left: 20px;
+      font-size: 0.9rem;
+    }
+
+    .detail-signature-container {
+      margin-top: 16px;
+      border: 1.5px dashed var(--border-color);
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      background: #fafafa;
+    }
+
+    .detail-signature-img {
+      max-width: 100%;
+      height: 120px;
+      object-fit: contain;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="view-tabs">
+    <button class="tab-btn active" id="tabForm">Customer Order Form</button>
+    <button class="tab-btn" id="tabHistory">🔒 Sign-up History & Logs</button>
+  </div>
+
+  <div class="app-container" id="formView">
+    <h1>Glow Peptide Order Form 🎀</h1>
+    <form id="orderForm">
+      <div class="input-grid">
+        <div class="input-group">
+          <label for="fullName">Name:</label>
+          <input type="text" id="fullName" required />
+        </div>
+        <div class="input-group">
+          <label for="address">Address:</label>
+          <input type="text" id="address" required />
+        </div>
+        <div class="input-group">
+          <label for="phone">Phone number:</label>
+          <input type="tel" id="phone" required />
+        </div>
+      </div>
+
+      <div class="peptides-container">
+        <div class="peptides-title">
+          <span>Choose Items to Order (Up to 6)</span>
+          <span style="font-size: 0.75rem; color: #777; font-weight: normal;">Select product & quantity</span>
+        </div>
+        
+        <div class="peptide-row">
+          <span class="peptide-num">1</span>
+          <select class="peptide-select" required>
+            <option value="">-- Select Product 1 (Required) --</option>
+          </select>
+          <input type="number" class="peptide-qty" placeholder="Qty" min="1" value="1" required />
+        </div>
+        <div class="peptide-row">
+          <span class="peptide-num">2</span>
+          <select class="peptide-select">
+            <option value="">-- Select Product 2 (Optional) --</option>
+          </select>
+          <input type="number" class="peptide-qty" placeholder="Qty" min="1" value="1" />
+        </div>
+        <div class="peptide-row">
+          <span class="peptide-num">3</span>
+          <select class="peptide-select">
+            <option value="">-- Select Product 3 (Optional) --</option>
+          </select>
+          <input type="number" class="peptide-qty" placeholder="Qty" min="1" value="1" />
+        </div>
+        <div class="peptide-row">
+          <span class="peptide-num">4</span>
+          <select class="peptide-select">
+            <option value="">-- Select Product 4 (Optional) --</option>
+          </select>
+          <input type="number" class="peptide-qty" placeholder="Qty" min="1" value="1" />
+        </div>
+        <div class="peptide-row">
+          <span class="peptide-num">5</span>
+          <select class="peptide-select">
+            <option value="">-- Select Product 5 (Optional) --</option>
+          </select>
+          <input type="number" class="peptide-qty" placeholder="Qty" min="1" value="1" />
+        </div>
+        <div class="peptide-row">
+          <span class="peptide-num">6</span>
+          <select class="peptide-select">
+            <option value="">-- Select Product 6 (Optional) --</option>
+          </select>
+          <input type="number" class="peptide-qty" placeholder="Qty" min="1" value="1" />
+        </div>
+      </div>
+
+      <div class="cards-grid">
+        <div class="info-card">
+          <div class="card-title">Medical Disclaimer</div>
+          <label class="checkbox-item"><input type="checkbox" required /><span>Used under medical supervision / non-OTC.</span></label>
+          <label class="checkbox-item"><input type="checkbox" required /><span>Seller is not a licensed physician.</span></label>
+          <label class="checkbox-item"><input type="checkbox" required /><span>I have consulted or will consult a doctor.</span></label>
+          <label class="checkbox-item"><input type="checkbox" required /><span>Results vary and risks exist.</span></label>
+        </div>
+
+        <div class="info-card">
+          <div class="card-title">Buyer Eligibility</div>
+          <label class="checkbox-item"><input type="checkbox" required /><span>I am at least 18 years old.</span></label>
+          <label class="checkbox-item"><input type="checkbox" required /><span>I am not pregnant or breastfeeding.</span></label>
+          <label class="checkbox-item"><input type="checkbox" required /><span>Aware of health condition & take full responsibility.</span></label>
+        </div>
+
+        <div class="info-card">
+          <div class="card-title">Liability Waiver</div>
+          <label class="checkbox-item"><input type="checkbox" required /><span>I release seller from all liabilities and outcomes.</span></label>
+        </div>
+
+        <div class="info-card">
+          <div class="card-title">Refund Policy</div>
+          <label class="checkbox-item"><input type="checkbox" required /><span>All sales final. No Return / No Refund agreed.</span></label>
+        </div>
+      </div>
+
+      <div>
+        <label style="font-weight: 600; font-size: 0.95rem;">Draw Buyer's Signature:</label>
+        <div class="signature-pad-wrapper" style="margin-top: 8px;">
+          <canvas id="signatureCanvas"></canvas>
+        </div>
+        <div class="sig-toolbar">
+          <span>Sign with finger or stylus</span>
+          <button type="button" class="btn-clear" id="clearBtn">Clear Signature</button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">Submit Order</button>
+    </form>
+  </div>
+
+  <div class="app-container hidden" id="historyView">
+    <div class="admin-header">
+      <h1 style="margin: 0; font-size: 1.25rem;">Sign-Up History Log 📋</h1>
+      <button type="button" class="btn-lock" id="lockHistoryBtn">🔒 Lock / Exit</button>
+    </div>
+    
+    <div class="filter-bar">
+      <div class="filter-field">
+        <label for="filterName">Filter by Name</label>
+        <input type="text" id="filterName" placeholder="Search customer name..." />
+      </div>
+      <div class="filter-field">
+        <label for="filterDate">Filter by Date</label>
+        <input type="date" id="filterDate" />
+      </div>
+      <div style="align-self: flex-end;">
+        <button type="button" id="resetFilters" style="padding: 8px 12px; background: #ddd; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">Reset</button>
+      </div>
+    </div>
+
+    <div style="font-size: 0.85rem; margin-bottom: 8px; font-weight: 600;" id="recordCount">Records found: 0</div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Date & Time</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Items Ordered</th>
+            <th style="text-align: center;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="historyTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="modal-overlay hidden" id="pinModal">
+    <div class="modal-box">
+      <h3 style="margin-top:0; color:var(--accent);">Admin Access</h3>
+      <p style="font-size: 0.85rem; color: #666; margin: 0;">Enter passcode to view logs:</p>
+      <input type="password" id="pinInput" placeholder="••••••" maxlength="10" />
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" id="cancelPinBtn">Cancel</button>
+        <button type="button" class="btn-verify" id="verifyPinBtn">Unlock</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay hidden" id="detailModal">
+    <div class="detail-modal-box">
+      <h3 style="margin-top: 0; color: var(--accent); border-bottom: 2px solid var(--border-color); padding-bottom: 8px;">Order Details & Signature Record</h3>
+      
+      <div class="detail-row"><span>Sign-Up Date:</span> <span id="dtDate"></span></div>
+      <div class="detail-row"><span>Sign-Up Time:</span> <span id="dtTime"></span></div>
+      <div class="detail-row"><span>Customer Name:</span> <span id="dtName"></span></div>
+      <div class="detail-row"><span>Contact Number:</span> <span id="dtPhone"></span></div>
+      <div class="detail-row"><span>Delivery Address:</span> <span id="dtAddress"></span></div>
+      <div class="detail-row"><span>Disclaimers & Waivers:</span> <span style="color: green; font-weight: 600;">✓ All Agreed</span></div>
+
+      <div style="margin-top: 14px;">
+        <span style="font-weight: 600; font-size: 0.9rem; color: var(--accent);">Ordered Peptides:</span>
+        <div class="items-list-box">
+          <ul id="dtItemsList"></ul>
+        </div>
+      </div>
+
+      <div style="margin-top: 14px;">
+        <span style="font-weight: 600; font-size: 0.9rem; color: var(--accent);">Recorded Buyer Signature:</span>
+        <div class="detail-signature-container">
+          <img id="dtSigImg" class="detail-signature-img" src="" alt="Buyer Signature" />
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <button type="button" id="closeDetailBtn" style="flex:1; padding: 10px; border-radius: 6px; border: 1px solid #ccc; background: #eee; cursor: pointer; font-weight: 600;">Close</button>
+        <button type="button" onclick="window.print()" style="flex:1; padding: 10px; border-radius: 6px; border: none; background: var(--primary-purple); color: white; cursor: pointer; font-weight: 600;">Print Record</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+
+    const PEPTIDE_OPTIONS = [
+      "Tirzepatide 30mg",
+      "Tirzepatide 15mg",
+      "KPV 10mg",
+      "GHK-CU 100mg",
+      "HHB 10ml",
+      "SuperHumanBlend 10ml",
+      "Super Shredder 10ml",
+      "Pharma Bac Ampoule 10ml",
+      "BAC Water 10ml",
+      "BAC Water 5ml",
+      "BAC Water 3ml",
+      "Syringe 1cc",
+      "Syringe 3ml",
+      "Syringe IM",
+      "Alcohol Pads",
+      "Luthione 1200mg",
+      "Glutaone 1200mg",
+      "Lucchini 2ml"
+    ];
+
+    document.querySelectorAll(".peptide-select").forEach(select => {
+      PEPTIDE_OPTIONS.forEach(item => {
+        const opt = document.createElement("option");
+        opt.value = item;
+        opt.textContent = item;
+        select.appendChild(opt);
+      });
+    });
+
+    // Your actual configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAhbP3cyrJrH46h-xwiutZfbTG0PmqTlLU",
+      authDomain: "glowpeptide-form.firebaseapp.com",
+      projectId: "glowpeptide-form",
+      storageBucket: "glowpeptide-form.firebasestorage.app",
+      messagingSenderId: "652782718571",
+      appId: "1:652782718571:web:411898fe058adcac0feb2e",
+      measurementId: "G-31HZ8QEVGC"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const ACCESS_PIN = "181995";
+    let isAuthenticated = false;
+
+    const tabForm = document.getElementById("tabForm");
+    const tabHistory = document.getElementById("tabHistory");
+    const formView = document.getElementById("formView");
+    const historyView = document.getElementById("historyView");
+    const pinModal = document.getElementById("pinModal");
+    const pinInput = document.getElementById("pinInput");
+
+    function switchToForm() {
+      tabForm.classList.add("active");
+      tabHistory.classList.remove("active");
+      formView.classList.remove("hidden");
+      historyView.classList.add("hidden");
+      pinModal.classList.add("hidden");
+    }
+
+    function switchToHistory() {
+      tabHistory.classList.add("active");
+      tabForm.classList.remove("active");
+      historyView.classList.remove("hidden");
+      formView.classList.add("hidden");
+      pinModal.classList.add("hidden");
+      loadHistory();
+    }
+
+    tabForm.addEventListener("click", switchToForm);
+
+    tabHistory.addEventListener("click", () => {
+      if (isAuthenticated) {
+        switchToHistory();
+      } else {
+        pinInput.value = "";
+        pinModal.classList.remove("hidden");
+        pinInput.focus();
+      }
+    });
+
+    document.getElementById("verifyPinBtn").addEventListener("click", checkPin);
+    pinInput.addEventListener("keyup", (e) => {
+      if (e.key === "Enter") checkPin();
+    });
+
+    function checkPin() {
+      if (pinInput.value === ACCESS_PIN) {
+        isAuthenticated = true;
+        switchToHistory();
+      } else {
+        alert("Incorrect passcode.");
+        pinInput.value = "";
+        pinInput.focus();
+      }
+    }
+
+    document.getElementById("cancelPinBtn").addEventListener("click", () => {
+      pinModal.classList.add("hidden");
+      switchToForm();
+    });
+
+    document.getElementById("lockHistoryBtn").addEventListener("click", () => {
+      isAuthenticated = false;
+      switchToForm();
+    });
+
+    // Signature Pad Initialization
+    const canvas = document.getElementById("signatureCanvas");
+    const signaturePad = new SignaturePad(canvas, { backgroundColor: 'rgba(255, 255, 255, 0)', penColor: '#20183b' });
+
+    function resizeCanvas() {
+      const ratio = Math.max(window.devicePixelRatio || 1, 1);
+      canvas.width = canvas.offsetWidth * ratio;
+      canvas.height = canvas.offsetHeight * ratio;
+      canvas.getContext("2d").scale(ratio, ratio);
+      signaturePad.clear();
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    document.getElementById("clearBtn").addEventListener("click", () => signaturePad.clear());
+
+    // Submit Order
+    document.getElementById("orderForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      if (signaturePad.isEmpty()) {
+        alert("Please draw your signature before submitting.");
+        return;
+      }
+
+      const selectInputs = document.querySelectorAll(".peptide-select");
+      const qtyInputs = document.querySelectorAll(".peptide-qty");
+      const orderedItems = [];
+
+      for (let i = 0; i < selectInputs.length; i++) {
+        const pName = selectInputs[i].value;
+        const pQty = qtyInputs[i].value.trim() || "1";
+        if (pName) {
+          orderedItems.push({
+            name: pName,
+            quantity: pQty
+          });
+        }
+      }
+
+      if (orderedItems.length === 0) {
+        alert("Please select at least one product.");
+        return;
+      }
+
+      const submitBtn = document.getElementById("submitBtn");
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Saving...";
+
+      const now = new Date();
+      const newRecord = {
+        name: document.getElementById("fullName").value.trim(),
+        address: document.getElementById("address").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        items: orderedItems,
+        signatureImage: signaturePad.toDataURL("image/png"),
+        timestampISO: now.toISOString(),
+        dateOnly: now.toLocaleDateString('en-CA'),
+        formattedDate: now.toLocaleDateString(),
+        formattedTime: now.toLocaleTimeString()
+      };
+
+      try {
+        await addDoc(collection(db, "peptide_orders"), newRecord);
+
+        alert("Sign-up and order recorded successfully!");
+        document.getElementById("orderForm").reset();
+        signaturePad.clear();
+      } catch (err) {
+        console.error("Firebase save error:", err);
+        // Fallback save to local storage if network or permissions fail
+        const stored = JSON.parse(localStorage.getItem("peptide_orders") || "[]");
+        stored.unshift(newRecord);
+        localStorage.setItem("peptide_orders", JSON.stringify(stored));
+        alert("Order saved locally to device! (Make sure your Firestore security rules allow read/write).");
+        document.getElementById("orderForm").reset();
+        signaturePad.clear();
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit Order";
+      }
+    });
+
+    // History Controller
+    let allOrders = [];
+    let displayedOrders = [];
+
+    async function loadHistory() {
+      const tableBody = document.getElementById("historyTableBody");
+      tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 20px;">Loading records from Firebase...</td></tr>`;
+
+      try {
+        const q = query(collection(db, "peptide_orders"), orderBy("timestampISO", "desc"));
+        const snapshot = await getDocs(q);
+        allOrders = snapshot.docs.map(doc => doc.data());
+      } catch (e) {
+        console.warn("Firestore read failed, falling back to device local backup:", e);
+        allOrders = JSON.parse(localStorage.getItem("peptide_orders") || "[]");
+      }
+
+      renderTable();
+    }
+
+    function renderTable() {
+      const nameQuery = document.getElementById("filterName").value.toLowerCase();
+      const dateQuery = document.getElementById("filterDate").value;
+      const tableBody = document.getElementById("historyTableBody");
+      const recordCount = document.getElementById("recordCount");
+
+      displayedOrders = allOrders.filter(item => {
+        const matchesName = item.name.toLowerCase().includes(nameQuery);
+        const matchesDate = !dateQuery || (item.dateOnly === dateQuery);
+        return matchesName && matchesDate;
+      });
+
+      recordCount.textContent = `Records found: ${displayedOrders.length}`;
+      tableBody.innerHTML = "";
+
+      if (displayedOrders.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#888; padding: 24px;">No matching records found.</td></tr>`;
+        return;
+      }
+
+      displayedOrders.forEach((order, index) => {
+        let itemsSummary = "";
+        if (order.items && Array.isArray(order.items)) {
+          itemsSummary = order.items.map(it => `${it.name} (×${it.quantity})`).join(", ");
+        } else if (order.peptide) {
+          itemsSummary = `${order.peptide} (×${order.quantity || 1})`;
+        }
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>
+            <strong>${order.formattedDate}</strong><br>
+            <span style="font-size:0.75rem; color:#666;">${order.formattedTime}</span>
+          </td>
+          <td><strong>${order.name}</strong></td>
+          <td>${order.phone}</td>
+          <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${itemsSummary}">
+            ${itemsSummary}
+          </td>
+          <td style="text-align: center;">
+            <button type="button" class="btn-view-detail" data-index="${index}">View Info & Sig</button>
+          </td>
+        `;
+        tableBody.appendChild(tr);
+      });
+
+      document.querySelectorAll(".btn-view-detail").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          const idx = e.target.getAttribute("data-index");
+          showDetails(displayedOrders[idx]);
+        });
+      });
+    }
+
+    const detailModal = document.getElementById("detailModal");
+    function showDetails(order) {
+      document.getElementById("dtDate").textContent = order.formattedDate;
+      document.getElementById("dtTime").textContent = order.formattedTime;
+      document.getElementById("dtName").textContent = order.name;
+      document.getElementById("dtPhone").textContent = order.phone;
+      document.getElementById("dtAddress").textContent = order.address;
+      document.getElementById("dtSigImg").src = order.signatureImage;
+
+      const itemsList = document.getElementById("dtItemsList");
+      itemsList.innerHTML = "";
+
+      if (order.items && Array.isArray(order.items)) {
+        order.items.forEach(it => {
+          const li = document.createElement("li");
+          li.innerHTML = `<strong>${it.name}</strong> — Quantity: <strong>${it.quantity}</strong>`;
+          itemsList.appendChild(li);
+        });
+      } else if (order.peptide) {
+        const li = document.createElement("li");
+        li.innerHTML = `<strong>${order.peptide}</strong> — Quantity: <strong>${order.quantity || 1}</strong>`;
+        itemsList.appendChild(li);
+      }
+
+      detailModal.classList.remove("hidden");
+    }
+
+    document.getElementById("closeDetailBtn").addEventListener("click", () => {
+      detailModal.classList.add("hidden");
+    });
+
+    document.getElementById("filterName").addEventListener("input", renderTable);
+    document.getElementById("filterDate").addEventListener("change", renderTable);
+    document.getElementById("resetFilters").addEventListener("click", () => {
+      document.getElementById("filterName").value = "";
+      document.getElementById("filterDate").value = "";
+      renderTable();
+    });
+  </script>
+</body>
+</html>
