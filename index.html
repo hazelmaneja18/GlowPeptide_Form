@@ -13,7 +13,6 @@
       --border-color: #d1bfe3;
       --text-dark: #3a3347;
       --accent: #55347a;
-      --maya-green: #00be64;
     }
 
     * {
@@ -216,7 +215,7 @@
       min-height: 42px;
     }
 
-    /* Payment Container */
+    /* Clean Payment Section (No QR) */
     .payment-section {
       background: #ffffff;
       border: 2px solid var(--primary-purple);
@@ -229,58 +228,60 @@
       text-align: center;
       color: var(--accent);
       font-weight: 800;
-      font-size: 1.05rem;
+      font-size: 1rem;
       text-transform: uppercase;
       margin-bottom: 12px;
     }
 
-    .payment-details-box {
-      background: #f8fcf9;
-      border: 1.5px solid #d2edd9;
-      border-radius: 10px;
-      padding: 14px;
-      margin-bottom: 14px;
+    .payment-card-list {
       display: flex;
       flex-direction: column;
       gap: 10px;
+      margin-bottom: 14px;
     }
 
-    .payment-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.9rem;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .copy-chip {
-      background: #fff;
-      border: 1px solid #7bc698;
-      color: #0b733b;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .qr-holder {
-      text-align: center;
-      background: #f5f9f6;
-      border: 1px solid #cbe3d4;
-      border-radius: 12px;
-      padding: 16px;
-      margin: 12px 0;
-    }
-
-    .qr-img {
-      max-width: 220px;
-      width: 100%;
-      height: auto;
+    .pay-card {
+      background: #fdfaff;
+      border: 1px solid var(--border-color);
       border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pay-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .pay-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--accent);
+    }
+
+    .pay-number {
+      font-size: 0.9rem;
+      color: #333;
+    }
+
+    .btn-copy {
       background: #fff;
+      border: 1.5px solid var(--primary-purple);
+      color: var(--accent);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-copy:active {
+      background: #eee5f7;
     }
 
     .receipt-upload-box {
@@ -519,10 +520,11 @@
       white-space: nowrap;
     }
 
+    /* Modals */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.55);
+      background: rgba(0, 0, 0, 0.6);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -645,11 +647,13 @@
 </head>
 <body>
 
+  <!-- Top Tab Navigation -->
   <div class="view-tabs">
     <button class="tab-btn active" id="tabForm">Order Form</button>
     <button class="tab-btn" id="tabHistory">🔒 History & Logs</button>
   </div>
 
+  <!-- 1. Customer Order Form View -->
   <div class="app-container" id="formView">
     <h1>Glow Peptide Order Form 🎀</h1>
     <form id="orderForm">
@@ -668,6 +672,7 @@
         </div>
       </div>
 
+      <!-- Dynamic Item List Container -->
       <div class="peptides-container">
         <div class="peptides-title">
           <span>Choose Items to Order</span>
@@ -681,50 +686,26 @@
         </button>
       </div>
 
+      <!-- Compact Payment Section (No QR) -->
       <div class="payment-section">
         <div class="payment-header">💳 Payment Options & Proof</div>
         
-        <div class="payment-details-box">
-          <div class="payment-row">
-            <span><strong>Maya:</strong> 09951460513 (Hazel Joyce Maneja)</span>
-            <button type="button" class="copy-chip" onclick="navigator.clipboard.writeText('09951460513'); alert('Maya number copied!');">Copy</button>
+        <div class="payment-card-list">
+          <div class="pay-card">
+            <div class="pay-info">
+              <span class="pay-name">Maya (Hazel Joyce Maneja)</span>
+              <span class="pay-number">09951460513</span>
+            </div>
+            <button type="button" class="btn-copy" onclick="navigator.clipboard.writeText('09951460513'); alert('Maya number copied!');">Copy</button>
           </div>
-          <div class="payment-row">
-            <span><strong>BPI:</strong> 6799002858</span>
-            <button type="button" class="copy-chip" onclick="navigator.clipboard.writeText('6799002858'); alert('BPI account copied!');">Copy</button>
+
+          <div class="pay-card">
+            <div class="pay-info">
+              <span class="pay-name">BPI Account</span>
+              <span class="pay-number">6799002858</span>
+            </div>
+            <button type="button" class="btn-copy" onclick="navigator.clipboard.writeText('6799002858'); alert('BPI account copied!');">Copy</button>
           </div>
-        </div>
-
-        <div class="qr-holder">
-          <div style="font-size: 0.8rem; font-weight: 700; color: #0f6e3c; margin-bottom: 8px;">Scan via Maya / InstaPay QR:</div>
-          <svg class="qr-img" viewBox="0 0 350 350" xmlns="http://www.w3.org/2000/svg">
-            <rect width="350" height="350" rx="16" fill="#f8fff9"/>
-            <circle cx="175" cy="42" r="18" fill="#00be64"/>
-            <text x="175" y="49" font-size="20" font-weight="900" fill="#fff" text-anchor="middle" font-family="sans-serif">m</text>
-            <text x="175" y="76" font-size="14" font-weight="bold" fill="#141414" text-anchor="middle" font-family="sans-serif">Hazel Joyce Maneja</text>
-            <text x="175" y="94" font-size="12" fill="#666" text-anchor="middle" font-family="sans-serif">+63 995 146 0513</text>
-            <rect x="50" y="106" width="250" height="200" rx="8" fill="#fff" stroke="#d5ebd9" stroke-width="1.5"/>
-            <rect x="70" y="124" width="46" height="46" fill="#1a1a1a"/>
-            <rect x="76" y="130" width="34" height="34" fill="#fff"/>
-            <rect x="82" y="136" width="22" height="22" fill="#1a1a1a"/>
-            
-            <rect x="234" y="124" width="46" height="46" fill="#1a1a1a"/>
-            <rect x="240" y="130" width="34" height="34" fill="#fff"/>
-            <rect x="246" y="136" width="22" height="22" fill="#1a1a1a"/>
-            
-            <rect x="70" y="240" width="46" height="46" fill="#1a1a1a"/>
-            <rect x="76" y="246" width="34" height="34" fill="#fff"/>
-            <rect x="82" y="252" width="22" height="22" fill="#1a1a1a"/>
-
-            <path d="M 126 126 h 94 v 16 h -94 z M 126 150 h 30 v 20 h -30 z M 190 150 h 30 v 20 h -30 z M 70 180 h 46 v 46 h -46 z M 76 186 h 34 v 34 h -34 z M 234 180 h 46 v 46 h -46 z M 240 186 h 34 v 34 h -34 z M 126 240 h 94 v 16 h -94 z M 126 266 h 40 v 20 h -40 z M 180 266 h 40 v 20 h -40 z M 234 240 h 46 v 46 h -46 z" fill="#1a1a1a"/>
-            
-            <rect x="145" y="180" width="60" height="34" rx="4" fill="#fff" stroke="#eee" stroke-width="1"/>
-            <text x="175" y="196" font-size="11" font-weight="900" fill="#1c3d79" text-anchor="middle" font-family="sans-serif">insta</text>
-            <text x="175" y="208" font-size="12" font-weight="900" fill="#d92534" text-anchor="middle" font-family="sans-serif">PAY</text>
-
-            <text x="175" y="324" font-size="12" font-weight="bold" fill="#00be64" text-anchor="middle" font-family="sans-serif">maya</text>
-          </svg>
-          <div style="font-size: 0.75rem; color: #777; margin-top: 4px;">InstaPay fees may apply</div>
         </div>
 
         <div class="receipt-upload-box">
@@ -780,6 +761,7 @@
     </form>
   </div>
 
+  <!-- 2. Admin Sign-Up History View (Passcode Protected) -->
   <div class="app-container hidden" id="historyView">
     <div class="admin-header">
       <h1 style="margin: 0; font-size: 1.15rem;">History Log 📋</h1>
@@ -818,6 +800,7 @@
     </div>
   </div>
 
+  <!-- Passcode Security Modal -->
   <div class="modal-overlay hidden" id="pinModal">
     <div class="modal-box">
       <h3 style="margin-top:0; color:var(--accent); font-size: 1.1rem;">Admin Access</h3>
@@ -830,6 +813,7 @@
     </div>
   </div>
 
+  <!-- Detailed View Modal -->
   <div class="modal-overlay hidden" id="detailModal">
     <div class="detail-modal-box">
       <h3 style="margin-top: 0; color: var(--accent); border-bottom: 1.5px solid var(--border-color); padding-bottom: 8px; font-size: 1.1rem;">Order Record & Verification</h3>
@@ -904,7 +888,6 @@
 
     let uploadedReceiptBase64 = "";
 
-    // Convert and compress receipt screenshot for fast, lightweight storage
     receiptFileInput.addEventListener("change", function () {
       const file = this.files[0];
       if (!file) {
