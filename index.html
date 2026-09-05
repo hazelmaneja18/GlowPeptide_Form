@@ -124,12 +124,12 @@
       border-bottom-color: var(--primary-purple);
     }
 
-    /* Mobile Responsive Peptide Grid */
+    /* Dynamic Peptides Container */
     .peptides-container {
       background: #fdfaff;
       border: 1.5px solid var(--border-color);
       border-radius: 12px;
-      padding: clamp(10px, 2.5vw, 16px);
+      padding: clamp(12px, 2.5vw, 16px);
       margin-bottom: 20px;
     }
 
@@ -139,16 +139,8 @@
       color: var(--accent);
       margin-bottom: 12px;
       display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    @media (min-width: 480px) {
-      .peptides-title {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-      }
+      justify-content: space-between;
+      align-items: center;
     }
 
     .peptide-row {
@@ -156,6 +148,12 @@
       gap: 8px;
       align-items: center;
       margin-bottom: 10px;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .peptide-num {
@@ -193,9 +191,49 @@
       min-height: 44px;
     }
 
+    .btn-remove-row {
+      background: #fcedec;
+      border: 1px solid #f5c2c2;
+      color: #c93b3b;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      width: 36px;
+      height: 44px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
     .peptide-select:focus,
     .peptide-qty:focus {
       border-color: var(--primary-purple);
+    }
+
+    /* Add Item Button */
+    .btn-add-item {
+      background: #f0eaf7;
+      border: 1.5px dashed var(--primary-purple);
+      color: var(--primary-purple);
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      min-height: 42px;
+      margin-top: 4px;
+    }
+
+    .btn-add-item:hover {
+      background: #e5d8f2;
     }
 
     /* Consent Cards */
@@ -552,52 +590,15 @@
 
       <div class="peptides-container">
         <div class="peptides-title">
-          <span>Choose Items (Up to 6)</span>
-          <span style="font-size: 0.75rem; color: #777; font-weight: normal;">Product & quantity</span>
+          <span>Choose Items to Order</span>
+          <span style="font-size: 0.75rem; color: #777; font-weight: normal;" id="itemCounterText">1 of 6 items</span>
         </div>
         
-        <div class="peptide-row">
-          <span class="peptide-num">1</span>
-          <select class="peptide-select" required>
-            <option value="">-- Product 1 (Required) --</option>
-          </select>
-          <input type="number" class="peptide-qty" min="1" value="1" placeholder="Qty" required />
-        </div>
-        <div class="peptide-row">
-          <span class="peptide-num">2</span>
-          <select class="peptide-select">
-            <option value="">-- Product 2 (Optional) --</option>
-          </select>
-          <input type="number" class="peptide-qty" min="1" value="1" placeholder="Qty" />
-        </div>
-        <div class="peptide-row">
-          <span class="peptide-num">3</span>
-          <select class="peptide-select">
-            <option value="">-- Product 3 (Optional) --</option>
-          </select>
-          <input type="number" class="peptide-qty" min="1" value="1" placeholder="Qty" />
-        </div>
-        <div class="peptide-row">
-          <span class="peptide-num">4</span>
-          <select class="peptide-select">
-            <option value="">-- Product 4 (Optional) --</option>
-          </select>
-          <input type="number" class="peptide-qty" min="1" value="1" placeholder="Qty" />
-        </div>
-        <div class="peptide-row">
-          <span class="peptide-num">5</span>
-          <select class="peptide-select">
-            <option value="">-- Product 5 (Optional) --</option>
-          </select>
-          <input type="number" class="peptide-qty" min="1" value="1" placeholder="Qty" />
-        </div>
-        <div class="peptide-row">
-          <span class="peptide-num">6</span>
-          <select class="peptide-select">
-            <option value="">-- Product 6 (Optional) --</option>
-          </select>
-          <input type="number" class="peptide-qty" min="1" value="1" placeholder="Qty" />
-        </div>
+        <div id="peptideRowsWrapper"></div>
+
+        <button type="button" class="btn-add-item" id="btnAddItem">
+          <span>+ Add Another Item</span>
+        </button>
       </div>
 
       <div class="cards-grid">
@@ -749,13 +750,64 @@
       "Lucchini 2ml"
     ];
 
-    document.querySelectorAll(".peptide-select").forEach(select => {
-      PEPTIDE_OPTIONS.forEach(item => {
-        const opt = document.createElement("option");
-        opt.value = item;
-        opt.textContent = item;
-        select.appendChild(opt);
+    const MAX_ITEMS = 6;
+    const rowsWrapper = document.getElementById("peptideRowsWrapper");
+    const btnAddItem = document.getElementById("btnAddItem");
+    const itemCounterText = document.getElementById("itemCounterText");
+
+    function createPeptideRow(index, isFirst = false) {
+      const row = document.createElement("div");
+      row.className = "peptide-row";
+
+      let optionsHtml = `<option value="">-- Select Product ${index} --</option>`;
+      PEPTIDE_OPTIONS.forEach(opt => {
+        optionsHtml += `<option value="${opt}">${opt}</option>`;
       });
+
+      row.innerHTML = `
+        <span class="peptide-num">${index}</span>
+        <select class="peptide-select" ${isFirst ? 'required' : ''}>
+          ${optionsHtml}
+        </select>
+        <input type="number" class="peptide-qty" min="1" value="1" placeholder="Qty" required />
+        ${!isFirst ? `<button type="button" class="btn-remove-row" title="Remove Item">✕</button>` : `<div style="width: 36px;"></div>`}
+      `;
+
+      if (!isFirst) {
+        row.querySelector(".btn-remove-row").addEventListener("click", () => {
+          row.remove();
+          updateRowNumbers();
+        });
+      }
+
+      return row;
+    }
+
+    function updateRowNumbers() {
+      const allRows = rowsWrapper.querySelectorAll(".peptide-row");
+      allRows.forEach((r, idx) => {
+        r.querySelector(".peptide-num").textContent = idx + 1;
+      });
+
+      itemCounterText.textContent = `${allRows.length} of ${MAX_ITEMS} items`;
+
+      if (allRows.length >= MAX_ITEMS) {
+        btnAddItem.style.display = "none";
+      } else {
+        btnAddItem.style.display = "flex";
+      }
+    }
+
+    // Initialize with 1 clean item
+    rowsWrapper.appendChild(createPeptideRow(1, true));
+    updateRowNumbers();
+
+    btnAddItem.addEventListener("click", () => {
+      const currentCount = rowsWrapper.querySelectorAll(".peptide-row").length;
+      if (currentCount < MAX_ITEMS) {
+        rowsWrapper.appendChild(createPeptideRow(currentCount + 1, false));
+        updateRowNumbers();
+      }
     });
 
     const firebaseConfig = {
@@ -836,7 +888,7 @@
       switchToForm();
     });
 
-    // Mobile-Safe Signature Pad Initialization
+    // Signature Pad Initialization
     const canvas = document.getElementById("signatureCanvas");
     const signaturePad = new SignaturePad(canvas, { 
       backgroundColor: 'rgba(255, 255, 255, 0)', 
@@ -845,7 +897,6 @@
 
     function resizeCanvas() {
       const ratio = Math.max(window.devicePixelRatio || 1, 1);
-      // Preserve drawing if rotating phone
       let data = null;
       if (!signaturePad.isEmpty()) {
         data = signaturePad.toData();
@@ -865,7 +916,7 @@
 
     document.getElementById("clearBtn").addEventListener("click", () => signaturePad.clear());
 
-    // Submit Action
+    // Submit Order
     document.getElementById("orderForm").addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -874,8 +925,8 @@
         return;
       }
 
-      const selectInputs = document.querySelectorAll(".peptide-select");
-      const qtyInputs = document.querySelectorAll(".peptide-qty");
+      const selectInputs = rowsWrapper.querySelectorAll(".peptide-select");
+      const qtyInputs = rowsWrapper.querySelectorAll(".peptide-qty");
       const orderedItems = [];
 
       for (let i = 0; i < selectInputs.length; i++) {
@@ -915,14 +966,25 @@
         await addDoc(collection(db, "peptide_orders"), newRecord);
         alert("Order submitted successfully!");
         document.getElementById("orderForm").reset();
+        
+        // Reset dynamic items back to single initial row
+        rowsWrapper.innerHTML = "";
+        rowsWrapper.appendChild(createPeptideRow(1, true));
+        updateRowNumbers();
+        
         signaturePad.clear();
       } catch (err) {
         console.error("Firebase save error:", err);
         const stored = JSON.parse(localStorage.getItem("peptide_orders") || "[]");
         stored.unshift(newRecord);
         localStorage.setItem("peptide_orders", JSON.stringify(stored));
-        alert("Saved locally to phone storage!");
+        alert("Saved locally to device!");
         document.getElementById("orderForm").reset();
+        
+        rowsWrapper.innerHTML = "";
+        rowsWrapper.appendChild(createPeptideRow(1, true));
+        updateRowNumbers();
+        
         signaturePad.clear();
       } finally {
         submitBtn.disabled = false;
